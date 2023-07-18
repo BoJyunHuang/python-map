@@ -93,24 +93,24 @@ cmap_humi = plt.colormaps.get_cmap('Blues')
 notebook = ttk.Notebook(window)
 notebook.pack(fill="both", expand=True)
 
-# 创建子画面和标签的名称列表
+# 建立子畫面和標籤的陣列
 tabs = [("Mean Temperature", "meanTemp"), ("Max Temperature", "maxTemp"), ("Min Temperature", "minTemp"), ("Rainfall", "rain"), ("Humidity", "humi"), ("Wind", "wind")]
  # 設定顯示時間
 latest_obs_time = gdf['obsTime'].max().strftime('%Y-%m-%d %H:%M')
 
-# 循环创建子画面和图表
+# 建立子畫面與圖
 for tab_name, column_name in tabs:
-    # 创建子画面
+    # 宣告
     tab = ttk.Frame(notebook)
     notebook.add(tab, text=tab_name)
 
-    # 在子画面中绘制图表
+    # 在子畫面繪製圖
     fig, ax = plt.subplots(figsize=(16, 9))
     ax.set_title(f"{tab_name} Map")
     map_data.plot(ax=ax, color='lightgray', edgecolor='gray')
     
     if 'Wind' in tab_name:
-        # 繪製風向
+        # 繪製風向，建立箭頭
         angles = df['wdir']
         speeds = df['wdsd']
         x = df['lon']
@@ -124,6 +124,7 @@ for tab_name, column_name in tabs:
         cbar = fig.colorbar(plt.cm.ScalarMappable(cmap='cool', norm=plt.Normalize(vmin=0, vmax=10)), ax=ax, orientation='vertical')
         cbar.set_label('Speed (m/s)')
     else:
+        # 繪製其他地圖
         if 'Temp' in column_name:
             averaged_data.plot(ax=ax, column=column_name, cmap=cmap_temp, linewidth=0.8, edgecolor='0.8', legend=False, vmin=vmin_temp, vmax=vmax_temp)
             averaged_data[averaged_data[column_name] < 0].plot(ax=ax, color='gray', linewidth=0.8, edgecolor='0.8')
@@ -134,7 +135,7 @@ for tab_name, column_name in tabs:
         else:
             averaged_data.plot(ax=ax, column=column_name, cmap=cmap_rain, linewidth=0.8, edgecolor='0.8', legend=False, vmin=vmin_rain, vmax=vmax_rain)
             sm = plt.cm.ScalarMappable(cmap=cmap_rain, norm=plt.Normalize(vmin=vmin_rain, vmax=vmax_rain))
-            
+        # 建立顏色條
         cbar = fig.colorbar(sm, ax=ax, orientation='vertical')
         if 'Temp' in column_name:
             cbar.set_label('Temperature (°C)')
@@ -142,12 +143,11 @@ for tab_name, column_name in tabs:
             cbar.set_label('Humidity')
         else:
             cbar.set_label('Rainfall (mm)')
-        
         sm.set_array([])
-               
+    # 附上時間  
     plt.text(0.99, 0.97, f'Latest Observation Time: {latest_obs_time}', transform=ax.transAxes, ha='right')
           
-    # 在子画面中显示图表
+    # 在子畫面中顯示圖表
     canvas = FigureCanvasTkAgg(fig, master=tab)
     canvas.draw()
     canvas.get_tk_widget().pack(fill="both", expand=True)
