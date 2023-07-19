@@ -61,9 +61,9 @@ averaged_data = pd.DataFrame(columns=merged_data.columns)
 exclude_columns = ['T_UID', 'Town_ID', 'T_Name', 'Add_Date', 'Add_Accept', 'Remark', 'County_ID', 'C_Name']
 # 對各行政區的測站進行平均處理
 for name, group in grouped_data:
-     # 排除非數值的列
+    # 排除非數值的列
     numeric_group = group.drop(columns=exclude_columns + ['geometry'])
-     # 替換非數值陣列的值為Nan
+    # 替換非數值陣列的值為Nan
     numeric_group = numeric_group.apply(pd.to_numeric, errors='coerce')
     # 計算平均
     average_values = numeric_group.mean(skipna=True)
@@ -95,7 +95,7 @@ notebook.pack(fill="both", expand=True)
 
 # 建立子畫面和標籤的陣列
 tabs = [("Mean Temperature", "meanTemp"), ("Max Temperature", "maxTemp"), ("Min Temperature", "minTemp"), ("Rainfall", "rain"), ("Humidity", "humi"), ("Wind", "wind")]
- # 設定顯示時間
+# 設定顯示時間
 latest_obs_time = gdf['obsTime'].max().strftime('%Y-%m-%d %H:%M')
 
 # 建立子畫面與圖
@@ -108,7 +108,7 @@ for tab_name, column_name in tabs:
     fig, ax = plt.subplots(figsize=(16, 9))
     ax.set_title(f"{tab_name} Map")
     map_data.plot(ax=ax, color='lightgray', edgecolor='gray')
-    
+
     if 'Wind' in tab_name:
         # 繪製風向，建立箭頭
         angles = df['wdir']
@@ -126,8 +126,8 @@ for tab_name, column_name in tabs:
     else:
         # 繪製其他地圖
         if 'Temp' in column_name:
-            averaged_data.plot(ax=ax, column=column_name, cmap=cmap_temp, linewidth=0.8, edgecolor='0.8', legend=False, vmin=vmin_temp, vmax=vmax_temp)
-            averaged_data[averaged_data[column_name] < 0].plot(ax=ax, color='gray', linewidth=0.8, edgecolor='0.8')
+            merged_data.plot(ax=ax, column=column_name, cmap=cmap_temp, linewidth=0.8, edgecolor='0.8', legend=False, vmin=vmin_temp, vmax=vmax_temp)
+            merged_data[merged_data[column_name] < 0].plot(ax=ax, color='gray', linewidth=0.8, edgecolor='0.8')
             sm = plt.cm.ScalarMappable(cmap=cmap_temp, norm=plt.Normalize(vmin=vmin_temp, vmax=vmax_temp))
         elif 'humi' in column_name:
             averaged_data.plot(ax=ax, column=column_name, cmap=cmap_humi, linewidth=0.8, edgecolor='0.8', legend=False, vmin=vmin_humi, vmax=vmax_humi)
@@ -144,9 +144,9 @@ for tab_name, column_name in tabs:
         else:
             cbar.set_label('Rainfall (mm)')
         sm.set_array([])
-    # 附上時間  
+    # 附上時間
     plt.text(0.99, 0.97, f'Latest Observation Time: {latest_obs_time}', transform=ax.transAxes, ha='right')
-          
+
     # 在子畫面中顯示圖表
     canvas = FigureCanvasTkAgg(fig, master=tab)
     canvas.draw()
@@ -154,4 +154,3 @@ for tab_name, column_name in tabs:
 
 # 顯示GUI介面
 window.mainloop()
-
