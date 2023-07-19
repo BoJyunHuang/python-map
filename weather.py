@@ -15,7 +15,7 @@ window.title('Data Visualization')
 window.geometry('1920x1080')
 
 # 讀取地圖向量數據(geojson)
-map_data = gpd.read_file('鄉鎮市區行政區域界線.json')
+map_data = gpd.read_file('C:\\Users\\taiwa\\OneDrive\\桌面\\test\\python-map\\country.json')
 
 # 讀取氣候數據(json)，編碼格式要記得是UTF-8
 # with open('weather.json', 'r', encoding='utf-8') as f:
